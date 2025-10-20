@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from loja.models import Produto, Carrinho, CarrinhoItem
+from loja.models import Produto, Carrinho, CarrinhoItem, Usuario
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -28,19 +28,19 @@ def create_carrinhoitem_view(request, produto_id=None):
             # Armazena o ID do carrinho na sessão
             request.session['carrinho_id'] = carrinho.id
             print ('novo carrinho: ' + str(carrinho.id))
-        else:
+    else:
             # Se o carrinho não existir na sessão, cria um novo carrinho
             carrinho = Carrinho.objects.create()
             # Armazena o ID do carrinho na sessão
             request.session['carrinho_id'] = carrinho.id
             print ('carrinho2: ' + str(carrinho.id))
         # Verifica se o produto já existe no carrinho do usuário
-        carrinho_item = CarrinhoItem.objects.filter(carrinho=carrinho, produto=produto).first()
-        if carrinho_item:
+    carrinho_item = CarrinhoItem.objects.filter(carrinho=carrinho, produto=produto).first()
+    if carrinho_item:
             # Se o produto já estiver no carrinho, apenas aumenta a quantidade
             carrinho_item.quantidade += 1
             print ('item de carrinho: Acrescentou 1 item do produto ' + str(carrinho_item.id))
-        else:
+    else:
             # Se o produto não estiver no carrinho, cria um novo item no carrinho
             carrinho_item = CarrinhoItem.objects.create(
                 carrinho=carrinho,
@@ -49,9 +49,9 @@ def create_carrinhoitem_view(request, produto_id=None):
                 preco=produto.preco
             )
             print ('item de carrinho: Acrescentou o produto ' + str(carrinho_item.id))
-        carrinho_item.save()
-        print ('item de carrinho salvo: ' + str(carrinho_item.id))
-        return redirect('/carrinho')
+    carrinho_item.save()
+    print ('item de carrinho salvo: ' + str(carrinho_item.id))
+    return redirect('/carrinho')
     
 def list_carrinho_view(request):
     print ('list_carrinho_view')
